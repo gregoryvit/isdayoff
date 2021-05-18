@@ -76,7 +76,9 @@ class ProdCalendar:
 
     def _is_cache_fresh(self, cache_file) -> bool:
         with open(cache_file.absolute()) as f:
-            return datetime.fromisoformat(f.readline().strip()) + self.freshness >= datetime.now()
+            fmt_str = r"%Y-%m-%dT%H:%M:%S.%f" # fromisoformat is not available in python 3.6
+            return datetime.strptime(f.readline().strip(), fmt_str) + self.freshness >= datetime.now()
+            # return datetime.fromisoformat(f.readline().strip()) + self.freshness >= datetime.now()
 
     def _get_cache(self, day: date) -> DayType:
         with open(self.cache_year(day.year, forced=False)) as f:
